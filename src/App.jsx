@@ -1,5 +1,7 @@
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import CookieBanner from "./components/CookieBanner";
+import { ConsentProvider } from "./context/ConsentContext";
 import Hero from "./sections/Hero";
 import About from "./sections/About";
 import Dishes from "./sections/Dishes";
@@ -10,7 +12,7 @@ import Location from "./sections/Location";
 
 function App() {
   return (
-    <>
+    <ConsentProvider>
       <Header />
       <main>
         <Hero />
@@ -22,7 +24,8 @@ function App() {
         <Location />
       </main>
       <Footer />
-    </>
+      <CookieBanner />
+    </ConsentProvider>
   );
 }
 
