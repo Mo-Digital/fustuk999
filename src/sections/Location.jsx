@@ -1,7 +1,37 @@
 import Reveal from "../components/Reveal";
 import { restaurant } from "../data/restaurant";
+import { useConsent } from "../context/ConsentContext";
+
+function MapsPlaceholder({ onEnable }) {
+  return (
+    <div className="flex h-full min-h-[360px] flex-col items-center justify-center gap-4 bg-sand-100 p-8 text-center">
+      <svg
+        viewBox="0 0 24 24"
+        className="h-8 w-8 text-olive-900/40"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        aria-hidden="true"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"
+        />
+      </svg>
+      <p className="max-w-xs text-sm leading-relaxed text-ink-900/70">
+        Die Karte wird über Google Maps geladen. Dabei wird deine IP-Adresse an Google
+        übermittelt. Bitte stimme externen Inhalten zu, um die Karte zu sehen.
+      </p>
+      <button type="button" onClick={onEnable} className="btn-secondary !border-olive-900/20 !text-olive-900 hover:!bg-olive-900/5">
+        Google Maps aktivieren
+      </button>
+    </div>
+  );
+}
 
 export default function Location() {
+  const { consent, savePreferences } = useConsent();
   return (
     <section id="kontakt" className="bg-sand-50 py-24 lg:py-32">
       <div className="mx-auto max-w-6xl px-6 lg:px-10">
@@ -67,13 +97,19 @@ export default function Location() {
 
           <Reveal delay={200}>
             <div className="h-full min-h-[360px] overflow-hidden rounded-2xl shadow-soft">
-              <iframe
-                title={`Standort von ${restaurant.name} auf Google Maps`}
-                src={restaurant.mapsEmbedSrc}
-                className="h-full w-full min-h-[360px] border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+              {consent.external ? (
+                <iframe
+                  title={`Standort von ${restaurant.name} auf Google Maps`}
+                  src={restaurant.mapsEmbedSrc}
+                  className="h-full w-full min-h-[360px] border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              ) : (
+                <MapsPlaceholder
+                  onEnable={() => savePreferences({ ...consent, external: true })}
+                />
+              )}
             </div>
           </Reveal>
         </div>
